@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "317507511833",
+    "project_id": "project-susu-sushi",
+    "storage_bucket": "project-susu-sushi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317507511833:android:27a662f8370bdd6de1ac88",
+        "android_client_info": {
+          "package_name": "com.example.susu_sushi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrDDtyUu0HijDbmfgYr5t8oT9dhUqZxjg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
