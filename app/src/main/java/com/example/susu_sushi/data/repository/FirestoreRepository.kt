@@ -21,11 +21,16 @@ class FirestoreRepository {
     }
 
     suspend fun getFoodsByCategory(categoryId: String): List<Food> {
-        val result = db.collection("foods")
-            .whereEqualTo("category_id", categoryId)
-            .get()
-            .await()
-        return result.toObjects(Food::class.java)
-    }
+        return try {
+            val result = db.collection("foods")
+                .whereEqualTo("category_id", categoryId)
+                .get()
+                .await()
+            result.toObjects(Food::class.java)
+            } catch (e: Exception) {
+                Log.e("getFoodsByCategory", "Error fetching Foods", e)
+                emptyList()
+            }
+        }
 
 }

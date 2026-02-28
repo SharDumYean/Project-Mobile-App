@@ -11,7 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 import com.example.susu_sushi.pages.CategoryScreen
+import com.example.susu_sushi.pages.FoodDetailScreen
 import com.example.susu_sushi.pages.LoginScreen
 import com.example.susu_sushi.pages.MenuScreen
 import com.example.susu_sushi.pages.SignUpScreen
@@ -25,20 +31,49 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SUSU_SUSHITheme {
-                // State to manage current screen
-                var currentScreen by remember { mutableStateOf("category") }
+                val navController = rememberNavController()
+                val saveStateViewModel: SaveStateViewModel = viewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        when (currentScreen) {
-                            "login" -> LoginScreen(
-                                onNavigateToSignUp = { currentScreen = "signup" }
-                            )
-                            "signup" -> SignUpScreen(
-                                onNavigateToLogin = { currentScreen = "login" }
-                            )
-                            "category" -> CategoryScreen()
+                    NavHost(
+                        navController = navController,
+                        startDestination = "category",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("login") {
+                            LoginScreen(onNavigateToSignUp = { navController.navigate("signup") })
+                        }
 
+                        composable("signup") {
+                            SignUpScreen(onNavigateToLogin = { navController.navigate("login") })
+                        }
+
+                        composable("category") {
+                            CategoryScreen(
+                                onNavigateToMenu = {categoryId ->
+                                    navController.navigate("menu/${categoryId}")
+                                } ,
+                                saveStateViewModel = saveStateViewModel
+                            )
+                        }
+
+                        composable("menu/{categoryId}") { backStackEntry ->
+                            val categoryId = backStackEntry.arguments?.getString("categoryId")
+                            MenuScreen(
+                                categoryId = categoryId ,
+                                onNavigateToCategory = {navController.navigate("category")} ,
+                                onNavigateToAddPage = {navController.navigate("addFood")} ,
+                                saveStateViewModel = saveStateViewModel
+                            )
+                        }
+
+                        composable("addFood"){
+                            FoodDetailScreen(
+                                onNavigateToMenu = {categoryId ->
+                                    navController.navigate("menu/${categoryId}")
+                                } ,
+                                saveStateViewModel = saveStateViewModel
+                            )
                         }
                     }
                 }

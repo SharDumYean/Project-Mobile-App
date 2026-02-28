@@ -1,6 +1,7 @@
 package com.example.susu_sushi.pages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,11 +24,16 @@ import coil.compose.AsyncImage
 import com.example.susu_sushi.R
 import com.example.susu_sushi.components.MainScaffold
 import com.example.susu_sushi.data.model.Category
-import com.example.susu_sushi.data.viewModel.FirestoreViewModel
+import com.example.susu_sushi.data.viewModel.CategoryViewModel
+import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 
 @Composable
-fun CategoryScreen(productViewModel: FirestoreViewModel = viewModel()) {
-    val categories by productViewModel.categories
+fun CategoryScreen(
+    onNavigateToMenu:(String)-> Unit ,
+    saveStateViewModel: SaveStateViewModel ,
+    categoryViewModel: CategoryViewModel = viewModel()
+) {
+    val categories by categoryViewModel.categories
 
     MainScaffold { innerPadding ->
         Column(
@@ -52,7 +58,12 @@ fun CategoryScreen(productViewModel: FirestoreViewModel = viewModel()) {
                 contentPadding = PaddingValues(bottom = 24.dp)
             ) {
                 items(categories) { category ->
-                    CategoryItem(category = category)
+                    CategoryItem(
+                        toMenu = {categoryId ->
+                            saveStateViewModel.setCategoryId(categoryId)
+                            onNavigateToMenu(categoryId) },
+                        category = category
+                    )
                 }
             }
         }
@@ -60,11 +71,15 @@ fun CategoryScreen(productViewModel: FirestoreViewModel = viewModel()) {
 }
 
 @Composable
-fun CategoryItem(category: Category) {
+fun CategoryItem(toMenu: (String) -> Unit , category: Category) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp),
+            .height(180.dp)
+            .clickable(onClick = {
+                toMenu(category.id)
+            })
+        ,
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
