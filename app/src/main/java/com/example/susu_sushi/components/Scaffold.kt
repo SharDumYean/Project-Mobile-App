@@ -19,13 +19,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.susu_sushi.R
 import com.example.susu_sushi.ui.theme.SushiRed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScaffold(
+    navController: NavHostController,
     content: @Composable (PaddingValues) -> Unit
+
 ) {
     Scaffold(
         topBar = {
@@ -52,7 +55,7 @@ fun MainScaffold(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO */ }) {
+                    IconButton(onClick = { navController.navigate("cart") }) {
                         Icon(
                             imageVector = Icons.Default.ShoppingCart,
                             contentDescription = "Cart",
@@ -60,9 +63,9 @@ fun MainScaffold(
                             modifier = Modifier.size(28.dp)
                         )
                     }
-                    IconButton(onClick = { /* TODO */ }) {
+                    IconButton(onClick = { navController.navigate("login") }) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
+                            painter = painterResource(R.drawable.user_profile) ,
                             contentDescription = "Menu",
                             tint = Color.White,
                             modifier = Modifier.size(28.dp)
@@ -93,13 +96,13 @@ fun MainScaffold(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-
+                        //menu button
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
                                 .padding(4.dp)
-                                .clickable { /* TODO */ },
+                                .clickable { navController.navigate("category") },
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -117,12 +120,12 @@ fun MainScaffold(
                             }
                         }
 
-                        // Order History Item
+                        // Order History Button
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
-                                .clickable { /* TODO */ },
+                                .clickable { navController.navigate("history") },
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {

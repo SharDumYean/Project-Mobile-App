@@ -29,41 +29,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.susu_sushi.R
 import com.example.susu_sushi.components.BackPageButton
 import com.example.susu_sushi.components.MainScaffold
 import com.example.susu_sushi.data.model.Food
-import com.example.susu_sushi.data.viewModel.FoodViewModel
+import com.example.susu_sushi.data.model.OrderItem
+import com.example.susu_sushi.data.viewModel.MenuViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 import com.example.susu_sushi.ui.theme.SUSU_SUSHITheme
 
 @Composable
 fun MenuScreen(
+    navController: NavHostController,
     categoryId: String? ,
-    onNavigateToCategory: () -> Unit ,
-    onNavigateToAddPage: () -> Unit ,
     saveStateViewModel: SaveStateViewModel ,
+    menuViewModel : MenuViewModel
 ) {
-    val foodViewModel: FoodViewModel = viewModel()
-    val foods by foodViewModel.foods
+
+    val foods = remember { mutableStateOf(emptyList<Food>()) }
+
 
     LaunchedEffect(categoryId) {
         if (categoryId.isNullOrEmpty()) {
             Log.e("MenuScreen", "categoryId is null or empty")
         } else {
-            foodViewModel.getFoodByCategory(categoryId)
+            foods.value = menuViewModel.getFoodByCategory(categoryId)
         }
     }
 
-    MainScaffold { innerPadding ->
+    MainScaffold(navController) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
 
-            BackPageButton(onNavigateToCategory)
+            BackPageButton({navController.navigate("category") } )
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -73,13 +76,16 @@ fun MenuScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
 
                 ) {
-                items(foods) { food ->
+                items(foods.value) { food ->
                     FoodItemCard(
                         foodDetail = food,
                         toAddFoodPage = { foodDetail ->
-                            saveStateViewModel.setFood(foodDetail)
-                            Log.d("saveStateFood", "Food: ${saveStateViewModel.food}")
-                            onNavigateToAddPage()
+                            saveStateViewModel.setFood(OrderItem(
+                                food = foodDetail,
+                                quantity = 1,
+                                note = ""
+                            ))
+                            navController.navigate("addFood")
                         }
                     )
                 }
@@ -101,9 +107,10 @@ fun FoodItemCard(
             .clickable(onClick = {
                 toAddFoodPage(foodDetail)
             })
+
         ,
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Black),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -126,7 +133,7 @@ fun FoodItemCard(
             ) {
                 Text(
                     text = foodDetail.name,
-                    color = Color.White,
+                    color = Color.Black,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
@@ -135,7 +142,7 @@ fun FoodItemCard(
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = "฿ ${"%.2f".format(foodDetail.price)}",
-                    color = Color.White,
+                    color = Color.Black,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Normal
                 )

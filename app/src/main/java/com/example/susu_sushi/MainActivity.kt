@@ -15,9 +15,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.susu_sushi.data.viewModel.MenuViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
+import com.example.susu_sushi.pages.CartScreen
 import com.example.susu_sushi.pages.CategoryScreen
 import com.example.susu_sushi.pages.FoodDetailScreen
+import com.example.susu_sushi.pages.HistoryScreen
 import com.example.susu_sushi.pages.LoginScreen
 import com.example.susu_sushi.pages.MenuScreen
 import com.example.susu_sushi.pages.SignUpScreen
@@ -33,6 +36,7 @@ class MainActivity : ComponentActivity() {
             SUSU_SUSHITheme {
                 val navController = rememberNavController()
                 val saveStateViewModel: SaveStateViewModel = viewModel()
+                val menuViewModel: MenuViewModel = viewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
@@ -41,40 +45,58 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("login") {
-                            LoginScreen(onNavigateToSignUp = { navController.navigate("signup") })
+                            LoginScreen( navController = navController )
                         }
 
                         composable("signup") {
-                            SignUpScreen(onNavigateToLogin = { navController.navigate("login") })
+                            SignUpScreen( navController = navController )
                         }
 
                         composable("category") {
                             CategoryScreen(
+                                navController = navController,
                                 onNavigateToMenu = {categoryId ->
                                     navController.navigate("menu/${categoryId}")
-                                } ,
-                                saveStateViewModel = saveStateViewModel
+                                },
+                                saveStateViewModel = saveStateViewModel ,
+                                menuViewModel = menuViewModel
                             )
                         }
 
                         composable("menu/{categoryId}") { backStackEntry ->
                             val categoryId = backStackEntry.arguments?.getString("categoryId")
                             MenuScreen(
+                                navController = navController,
                                 categoryId = categoryId ,
-                                onNavigateToCategory = {navController.navigate("category")} ,
-                                onNavigateToAddPage = {navController.navigate("addFood")} ,
-                                saveStateViewModel = saveStateViewModel
+                                saveStateViewModel = saveStateViewModel ,
+                                menuViewModel = menuViewModel
                             )
                         }
 
                         composable("addFood"){
                             FoodDetailScreen(
+                                navController = navController,
                                 onNavigateToMenu = {categoryId ->
                                     navController.navigate("menu/${categoryId}")
                                 } ,
                                 saveStateViewModel = saveStateViewModel
                             )
                         }
+
+                        composable("cart"){
+                            CartScreen(
+                                navController = navController ,
+                                saveStateViewModel = saveStateViewModel
+                            )
+                        }
+
+                        composable("history"){
+                            HistoryScreen(
+                                navController = navController ,
+                                saveStateViewModel = saveStateViewModel
+                            )
+                        }
+
                     }
                 }
             }

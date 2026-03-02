@@ -1,6 +1,7 @@
 package com.example.susu_sushi.pages
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,12 +19,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.susu_sushi.R
+import com.example.susu_sushi.components.BackPageButton
 import com.example.susu_sushi.ui.theme.SUSU_SUSHITheme
 import com.example.susu_sushi.ui.theme.SushiRed
 
 @Composable
-fun SignUpScreen(onNavigateToLogin: () -> Unit = {}) {
+fun SignUpScreen(navController : NavController) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -32,137 +36,149 @@ fun SignUpScreen(onNavigateToLogin: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(Color.White)
     ) {
-        // Logo Section
-        Image(
-            painter = painterResource(id = R.drawable.sususushi_logo_white),
-            contentDescription = "Logo",
-            modifier = Modifier
-                .size(150.dp)
-                .padding(bottom = 16.dp),
-            contentScale = ContentScale.Crop
-        )
+        BackPageButton({ navController.popBackStack() })
 
-        Text(
-            text = "Sign Up",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
-
-        // Name Field
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("UserName") },
-            placeholder = { Text("UserName") },
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-                unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-            )
-        )
-
-        // Email Field
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            placeholder = { Text("Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-                unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-            )
-        )
-
-        // Password Field
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            placeholder = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-                unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-            )
-        )
-
-        // Confirm Password Field
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("ConfirmPassword") },
-            placeholder = { Text("ConfirmPassword") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 32.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-                unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
-            )
-        )
-
-        Button(
-            onClick = { /* TODO */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = SushiRed),
-            shape = RoundedCornerShape(16.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "CREATE ACCOUNT",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-        }
 
-        Row(
-            modifier = Modifier.padding(top = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Already have an account? ",
-                color = Color.Gray,
-                fontSize = 12.sp
+            // Logo Section
+            Image(
+                painter = painterResource(id = R.drawable.sususushi_logo_white),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .size(150.dp)
+                    .padding(bottom = 16.dp),
+                contentScale = ContentScale.Crop
             )
+
             Text(
-                text = "Sign In",
-                color = SushiRed,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onNavigateToLogin() }
+                text = "Sign Up",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.padding(bottom = 24.dp)
             )
+
+            // Name Field
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("UserName") },
+                placeholder = { Text("UserName") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                    unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                )
+            )
+
+            // Email Field
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                placeholder = { Text("Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                    unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                )
+            )
+
+            // Password Field
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                placeholder = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                    unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                )
+            )
+
+            // Confirm Password Field
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("ConfirmPassword") },
+                placeholder = { Text("ConfirmPassword") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                    unfocusedBorderColor = Color.LightGray.copy(alpha = 0.5f),
+                )
+            )
+
+            Button(
+                onClick = {
+                    navController.navigate("login")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = SushiRed),
+                shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+            ) {
+                Text(
+                    text = "CREATE ACCOUNT",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+
+//        Row(
+//            modifier = Modifier.padding(top = 24.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = "Already have an account? ",
+//                color = Color.Gray,
+//                fontSize = 12.sp
+//            )
+//            Text(
+//                text = "Sign In",
+//                color = SushiRed,
+//                fontSize = 12.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier.clickable {
+//
+//                }
+//            )
+//        }
         }
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {
     SUSU_SUSHITheme {
-        SignUpScreen()
+        SignUpScreen(rememberNavController())
     }
 }

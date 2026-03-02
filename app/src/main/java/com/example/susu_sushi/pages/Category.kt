@@ -20,22 +20,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.susu_sushi.R
 import com.example.susu_sushi.components.MainScaffold
 import com.example.susu_sushi.data.model.Category
-import com.example.susu_sushi.data.viewModel.CategoryViewModel
+import com.example.susu_sushi.data.viewModel.MenuViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 
 @Composable
 fun CategoryScreen(
+    navController: NavHostController,
     onNavigateToMenu:(String)-> Unit ,
     saveStateViewModel: SaveStateViewModel ,
-    categoryViewModel: CategoryViewModel = viewModel()
+    menuViewModel: MenuViewModel
 ) {
-    val categories by categoryViewModel.categories
-
-    MainScaffold { innerPadding ->
+    val categories by menuViewModel.categories
+    MainScaffold(navController) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
