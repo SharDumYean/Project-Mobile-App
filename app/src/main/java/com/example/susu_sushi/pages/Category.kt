@@ -25,6 +25,7 @@ import coil.compose.AsyncImage
 import com.example.susu_sushi.R
 import com.example.susu_sushi.components.MainScaffold
 import com.example.susu_sushi.data.model.Category
+import com.example.susu_sushi.data.viewModel.AuthViewModel
 import com.example.susu_sushi.data.viewModel.MenuViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 
@@ -33,10 +34,11 @@ fun CategoryScreen(
     navController: NavHostController,
     onNavigateToMenu:(String)-> Unit ,
     saveStateViewModel: SaveStateViewModel ,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel ,
+    authViewModel: AuthViewModel
 ) {
     val categories by menuViewModel.categories
-    MainScaffold(navController) { innerPadding ->
+    MainScaffold(navController ,authViewModel) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

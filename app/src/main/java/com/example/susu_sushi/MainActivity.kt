@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.susu_sushi.data.viewModel.AuthViewModel
 import com.example.susu_sushi.data.viewModel.MenuViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 import com.example.susu_sushi.pages.CartScreen
@@ -23,6 +24,7 @@ import com.example.susu_sushi.pages.FoodDetailScreen
 import com.example.susu_sushi.pages.HistoryScreen
 import com.example.susu_sushi.pages.LoginScreen
 import com.example.susu_sushi.pages.MenuScreen
+import com.example.susu_sushi.pages.SettingScreen
 import com.example.susu_sushi.pages.SignUpScreen
 import com.example.susu_sushi.ui.theme.SUSU_SUSHITheme
 
@@ -37,6 +39,8 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val saveStateViewModel: SaveStateViewModel = viewModel()
                 val menuViewModel: MenuViewModel = viewModel()
+                val authViewModel: AuthViewModel = viewModel()
+
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
@@ -45,11 +49,17 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("login") {
-                            LoginScreen( navController = navController )
+                            LoginScreen(
+                                navController = navController ,
+                                authViewModel = authViewModel
+                            )
                         }
 
                         composable("signup") {
-                            SignUpScreen( navController = navController )
+                            SignUpScreen(
+                                navController = navController ,
+                                authViewModel = authViewModel
+                            )
                         }
 
                         composable("category") {
@@ -59,7 +69,8 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("menu/${categoryId}")
                                 },
                                 saveStateViewModel = saveStateViewModel ,
-                                menuViewModel = menuViewModel
+                                menuViewModel = menuViewModel ,
+                                authViewModel = authViewModel ,
                             )
                         }
 
@@ -69,7 +80,8 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 categoryId = categoryId ,
                                 saveStateViewModel = saveStateViewModel ,
-                                menuViewModel = menuViewModel
+                                menuViewModel = menuViewModel ,
+                                authViewModel = authViewModel
                             )
                         }
 
@@ -79,21 +91,31 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToMenu = {categoryId ->
                                     navController.navigate("menu/${categoryId}")
                                 } ,
-                                saveStateViewModel = saveStateViewModel
+                                saveStateViewModel = saveStateViewModel,
+                                authViewModel = authViewModel
                             )
                         }
 
                         composable("cart"){
                             CartScreen(
                                 navController = navController ,
-                                saveStateViewModel = saveStateViewModel
+                                saveStateViewModel = saveStateViewModel ,
+                                menuViewModel = menuViewModel ,
                             )
                         }
 
                         composable("history"){
                             HistoryScreen(
                                 navController = navController ,
-                                saveStateViewModel = saveStateViewModel
+                                menuViewModel = menuViewModel,
+                                authViewModel = authViewModel
+                            )
+                        }
+
+                        composable("setting"){
+                            SettingScreen(
+                                navController = navController ,
+                                authViewModel = authViewModel
                             )
                         }
 

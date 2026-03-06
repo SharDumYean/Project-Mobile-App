@@ -19,19 +19,35 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.susu_sushi.R
 import com.example.susu_sushi.components.BackPageButton
+import com.example.susu_sushi.data.viewModel.AuthViewModel
 import com.example.susu_sushi.ui.theme.SUSU_SUSHITheme
 import com.example.susu_sushi.ui.theme.SushiRed
 
 @Composable
-fun SignUpScreen(navController : NavController) {
+fun SignUpScreen(
+    navController : NavController ,
+    authViewModel: AuthViewModel
+) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
+    val authState by authViewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthViewModel.AuthState.Success) {
+            navController.navigate("login") {
+                popUpTo("signup") { inclusive = true }
+            }
+            authViewModel.resetState()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -134,9 +150,20 @@ fun SignUpScreen(navController : NavController) {
                 )
             )
 
+            if (authState is AuthViewModel.AuthState.Error) {
+                Text(
+                    text = (authState as AuthViewModel.AuthState.Error).message,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+
             Button(
                 onClick = {
-                    navController.navigate("login")
+                    if (password == confirmPassword) {
+                        authViewModel.register(email, password)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,12 +172,16 @@ fun SignUpScreen(navController : NavController) {
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
             ) {
-                Text(
-                    text = "CREATE ACCOUNT",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (authState is AuthViewModel.AuthState.Loading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text(
+                        text = "CREATE ACCOUNT",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
 
 //        Row(
@@ -179,6 +210,6 @@ fun SignUpScreen(navController : NavController) {
 @Composable
 fun SignUpScreenPreview() {
     SUSU_SUSHITheme {
-        SignUpScreen(rememberNavController())
+        SignUpScreen(rememberNavController() , viewModel() )
     }
 }

@@ -19,17 +19,30 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.susu_sushi.R
 import com.example.susu_sushi.components.BackPageButton
+import com.example.susu_sushi.data.viewModel.AuthViewModel
 import com.example.susu_sushi.ui.theme.SUSU_SUSHITheme
 import com.example.susu_sushi.ui.theme.SushiRed
 
 @Composable
-fun LoginScreen(navController : NavController) {
+fun LoginScreen(
+    navController : NavController ,
+    authViewModel : AuthViewModel
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val authState by authViewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthViewModel.AuthState.LoggedIn) {
+            navController.navigate("category")
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -70,8 +83,8 @@ fun LoginScreen(navController : NavController) {
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("UserName") },
-                placeholder = { Text("UserName") },
+                label = { Text("Username") },
+                placeholder = { Text("Username") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -106,10 +119,20 @@ fun LoginScreen(navController : NavController) {
                     .padding(top = 8.dp, bottom = 32.dp)
                     .clickable { /* TODO */ }
             )
+
+            if (authState is AuthViewModel.AuthState.Error) {
+                Text(
+                    text = (authState as AuthViewModel.AuthState.Error).message,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+
             //login button
             Button(
                 onClick = {
-                    navController.navigate("category")
+                    authViewModel.loginWithEmail(username, password)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,6 +173,6 @@ fun LoginScreen(navController : NavController) {
 @Composable
 fun LoginScreenPreview() {
     SUSU_SUSHITheme {
-        LoginScreen(rememberNavController())
+        LoginScreen(rememberNavController() , viewModel() )
     }
 }

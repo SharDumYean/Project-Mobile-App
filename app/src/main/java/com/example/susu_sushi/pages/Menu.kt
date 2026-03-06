@@ -36,6 +36,7 @@ import com.example.susu_sushi.components.BackPageButton
 import com.example.susu_sushi.components.MainScaffold
 import com.example.susu_sushi.data.model.Food
 import com.example.susu_sushi.data.model.OrderItem
+import com.example.susu_sushi.data.viewModel.AuthViewModel
 import com.example.susu_sushi.data.viewModel.MenuViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 import com.example.susu_sushi.ui.theme.SUSU_SUSHITheme
@@ -45,7 +46,8 @@ fun MenuScreen(
     navController: NavHostController,
     categoryId: String? ,
     saveStateViewModel: SaveStateViewModel ,
-    menuViewModel : MenuViewModel
+    menuViewModel : MenuViewModel ,
+    authViewModel: AuthViewModel
 ) {
 
     val foods = remember { mutableStateOf(emptyList<Food>()) }
@@ -59,7 +61,7 @@ fun MenuScreen(
         }
     }
 
-    MainScaffold(navController) { innerPadding ->
+    MainScaffold(navController , authViewModel) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

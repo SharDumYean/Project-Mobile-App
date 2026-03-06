@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,7 @@ import coil.compose.AsyncImage
 import com.example.susu_sushi.components.BackPageButton
 import com.example.susu_sushi.components.MainScaffold
 import com.example.susu_sushi.data.model.OrderItem
+import com.example.susu_sushi.data.viewModel.AuthViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 import com.example.susu_sushi.ui.theme.SushiRed
 
@@ -48,11 +50,14 @@ fun FoodDetailScreen(
     navController: NavHostController,
     onNavigateToMenu: (String)-> Unit,
     saveStateViewModel: SaveStateViewModel,
+    authViewModel: AuthViewModel
 ) {
-    MainScaffold(navController) { innerPadding ->
+    MainScaffold(navController , authViewModel) { innerPadding ->
         val orderItem = saveStateViewModel.orderItem.value
         var quantity by remember { mutableIntStateOf(orderItem.quantity) }
         var note by remember { mutableStateOf(orderItem.note) }
+        val authState by authViewModel.authState.collectAsState()
+
 
         Column(
             modifier = Modifier
@@ -158,14 +163,19 @@ fun FoodDetailScreen(
                 // ปุ่มเพิ่มลงในตะกร้า
                 Button(
                     onClick = {
-                        saveStateViewModel.addOrderItem(
-                            OrderItem(
-                                food = orderItem.food,
-                                quantity = quantity,
-                                note = note
+                        if (authState is AuthViewModel.AuthState.LoggedIn){
+                            saveStateViewModel.addOrderItem(
+                                OrderItem(
+                                    food = orderItem.food,
+                                    quantity = quantity,
+                                    note = note
+                                )
                             )
-                        )
-                        navController.navigate("menu/${saveStateViewModel.categoryId.value}")
+                            navController.navigate("menu/${saveStateViewModel.categoryId.value}")
+                        }else{
+                            navController.navigate("login")
+                        }
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()

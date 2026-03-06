@@ -11,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,16 +26,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.susu_sushi.data.model.OrderItem
+import com.example.susu_sushi.data.viewModel.AuthViewModel
+import com.example.susu_sushi.data.viewModel.MenuViewModel
 import com.example.susu_sushi.data.viewModel.SaveStateViewModel
 import com.example.susu_sushi.ui.theme.SushiRed
+import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun CartScreen(
     navController: NavHostController,
-    saveStateViewModel: SaveStateViewModel
+    saveStateViewModel: SaveStateViewModel ,
+    menuViewModel: MenuViewModel
 ) {
     val myItemList by remember { saveStateViewModel.orderItems }
     val totalPrice = myItemList.sumOf { it.food.price * it.quantity }
+    val isOrderSucces by menuViewModel.isSucces
 
     Scaffold(
         topBar = {
@@ -115,9 +122,11 @@ fun CartScreen(
 
                     Button(
                         onClick = {
-                            // สั้งการสั่งรายการสินค้า
-                            saveStateViewModel.clearCart()
-                            navController.navigate("history")
+                            if(!myItemList.isEmpty()) {
+                                menuViewModel.orderFood(myItemList, totalPrice)
+                                saveStateViewModel.clearCart()
+                                navController.navigate("history")
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
