@@ -87,8 +87,8 @@ fun LoginScreen(
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username") },
-                placeholder = { Text("Username") },
+                label = { Text("Email") },
+                placeholder = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
