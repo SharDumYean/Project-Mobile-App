@@ -40,6 +40,10 @@ fun SignUpScreen(
 
     val authState by authViewModel.authState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        authViewModel.resetState()
+    }
+
     LaunchedEffect(authState) {
         if (authState is AuthViewModel.AuthState.Success) {
             navController.navigate("login") {
@@ -184,25 +188,26 @@ fun SignUpScreen(
                 }
             }
 
-//        Row(
-//            modifier = Modifier.padding(top = 24.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text(
-//                text = "Already have an account? ",
-//                color = Color.Gray,
-//                fontSize = 12.sp
-//            )
-//            Text(
-//                text = "Sign In",
-//                color = SushiRed,
-//                fontSize = 12.sp,
-//                fontWeight = FontWeight.Bold,
-//                modifier = Modifier.clickable {
-//
-//                }
-//            )
-//        }
+            Row(
+                modifier = Modifier.padding(top = 24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Already have an account? ",
+                    color = Color.Gray,
+                    fontSize = 12.sp
+                )
+                Text(
+                    text = "Sign In",
+                    color = SushiRed,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        authViewModel.resetState()
+                        navController.navigate("login")
+                    }
+                )
+            }
         }
     }
 }

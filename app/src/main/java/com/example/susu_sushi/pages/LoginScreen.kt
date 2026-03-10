@@ -38,6 +38,10 @@ fun LoginScreen(
 
     val authState by authViewModel.authState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        authViewModel.resetState()
+    }
+
     LaunchedEffect(authState) {
         if (authState is AuthViewModel.AuthState.LoggedIn) {
             navController.navigate("category")
@@ -141,12 +145,16 @@ fun LoginScreen(
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
             ) {
-                Text(
-                    text = "LOGIN IN",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (authState is AuthViewModel.AuthState.Loading) {
+                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text(
+                        text = "LOGIN IN",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
 
             Row(
@@ -163,7 +171,10 @@ fun LoginScreen(
                     color = SushiRed,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { navController.navigate("signup") }
+                    modifier = Modifier.clickable { 
+                        authViewModel.resetState()
+                        navController.navigate("signup") 
+                    }
                 )
             }
         }
